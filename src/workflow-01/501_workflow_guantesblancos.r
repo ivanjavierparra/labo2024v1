@@ -107,7 +107,7 @@ DR_drifting_guantesblancos <- function( pmyexp, pinputexps, pserver="local")
   param_local$meta$script <- "/src/workflow-01/z531_DR_corregir_drifting.r"
 
   # No me engraso las manos con Feature Engineering manual
-  param_local$variables_intrames <- FALSE
+  param_local$variables_intrames <- TRUE
   # valores posibles
   #  "ninguno", "rank_simple", "rank_cero_fijo", "deflacion", "estandarizar"
   param_local$metodo <- "rank_cero_fijo"
@@ -318,18 +318,18 @@ corrida_guantesblancos_202109 <- function( pnombrewf, pvirgen=FALSE )
 {
   if( -1 == exp_wf_init( pnombrewf, pvirgen) ) return(0) # linea fija
 
-  DT_incorporar_dataset_default( "DT0001", "competencia_2024.csv.gz")
-  CA_catastrophe_default( "CA0001", "DT0001" )
+  DT_incorporar_dataset_default( "DT0001-01", "competencia_2024.csv.gz")
+  CA_catastrophe_default( "CA0001-01", "DT0001-01" )
 
-  DR_drifting_guantesblancos( "DR0001", "CA0001" )
-  FE_historia_guantesblancos( "FE0001", "DR0001" )
+  DR_drifting_guantesblancos( "DR0001-01", "CA0001-01" )
+  FE_historia_guantesblancos( "FE0001-01", "DR0001-01" )
 
-  TS_strategy_guantesblancos_202109( "TS0001", "FE0001" )
+  TS_strategy_guantesblancos_202109( "TS0001-01", "FE0001-01" )
 
-  HT_tuning_guantesblancos( "HT0001", "TS0001" )
+  HT_tuning_guantesblancos( "HT0001-01", "TS0001-01" )
 
   # El ZZ depente de HT y TS
-  ZZ_final_guantesblancos( "ZZ0001", c("HT0001","TS0001") )
+  ZZ_final_guantesblancos( "ZZ0001-01", c("HT0001-01","TS0001-01") )
 
 
   exp_wf_end( pnombrewf, pvirgen ) # linea fija
@@ -346,12 +346,12 @@ corrida_guantesblancos_202107 <- function( pnombrewf, pvirgen=FALSE )
   if( -1 == exp_wf_init( pnombrewf, pvirgen) ) return(0) # linea fija
 
   # Ya tengo corrido FE0001 y parto de alli
-  TS_strategy_guantesblancos_202107( "TS0002", "FE0001" )
+  TS_strategy_guantesblancos_202107( "TS0002-01", "FE0001-01" )
 
-  HT_tuning_guantesblancos( "HT0002", "TS0002" )
+  HT_tuning_guantesblancos( "HT0002-01", "TS0002-01" )
 
   # El ZZ depente de HT y TS
-  ZZ_final_guantesblancos( "ZZ0002", c("HT0002", "TS0002") )
+  ZZ_final_guantesblancos( "ZZ0002-01", c("HT0002-01", "TS0002-01") )
 
 
   exp_wf_end( pnombrewf, pvirgen ) # linea fija
