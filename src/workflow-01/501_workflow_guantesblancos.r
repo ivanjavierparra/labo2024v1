@@ -107,7 +107,7 @@ DR_drifting_guantesblancos <- function( pmyexp, pinputexps, pserver="local")
   param_local$meta$script <- "/src/workflow-01/z531_DR_corregir_drifting.r"
 
   # No me engraso las manos con Feature Engineering manual
-  param_local$variables_intrames <- TRUE
+  param_local$variables_intrames <- FALSE
   # valores posibles
   #  "ninguno", "rank_simple", "rank_cero_fijo", "deflacion", "estandarizar"
   param_local$metodo <- "rank_cero_fijo"
@@ -259,24 +259,24 @@ HT_tuning_guantesblancos <- function( pmyexp, pinputexps, pserver="local")
     bagging_fraction = 1.0, # 0.0 < bagging_fraction <= 1.0
     pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
     neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
-    is_unbalance = TRUE, #
+    is_unbalance = FALSE, #
     scale_pos_weight = 1.0, # scale_pos_weight > 0.0
 
     drop_rate = 0.1, # 0.0 < neg_bagging_fraction <= 1.0
     max_drop = 50, # <=0 means no limit
     skip_drop = 0.5, # 0.0 <= skip_drop <= 1.0
 
-    extra_trees = TRUE,
+    extra_trees = FALSE,
     # White Gloves Bayesian Optimization, with a happy narrow exploration
     learning_rate = c( 0.02, 0.8 ),
     feature_fraction = c( 0.5, 0.9 ),
-    num_leaves = c( 150L, 1024L,  "integer" ),
+    num_leaves = c( 300L, 1024L,  "integer" ),
     min_data_in_leaf = c( 100L, 2000L, "integer" )
   )
 
 
   # una Beyesian de Guantes Blancos, solo hace 15 iteraciones
-  param_local$bo_iteraciones <- 200 # iteraciones de la Optimizacion Bayesiana
+  param_local$bo_iteraciones <- 15 # iteraciones de la Optimizacion Bayesiana
 
   return( exp_correr_script( param_local ) ) # linea fija
 }
@@ -318,18 +318,18 @@ corrida_guantesblancos_202109 <- function( pnombrewf, pvirgen=FALSE )
 {
   if( -1 == exp_wf_init( pnombrewf, pvirgen) ) return(0) # linea fija
 
-  DT_incorporar_dataset_default( "DT0001-03", "competencia_2024.csv.gz")
-  CA_catastrophe_default( "CA0001-03", "DT0001-03" )
+  DT_incorporar_dataset_default( "DT0001", "competencia_2024.csv.gz")
+  CA_catastrophe_default( "CA0001", "DT0001" )
 
-  DR_drifting_guantesblancos( "DR0001-03", "CA0001-03" )
-  FE_historia_guantesblancos( "FE0001-03", "DR0001-03" )
+  DR_drifting_guantesblancos( "DR0001", "CA0001" )
+  FE_historia_guantesblancos( "FE0001", "DR0001" )
 
-  TS_strategy_guantesblancos_202109( "TS0001-03", "FE0001-03" )
+  TS_strategy_guantesblancos_202109( "TS0001", "FE0001" )
 
-  HT_tuning_guantesblancos( "HT0001-03", "TS0001-03" )
+  HT_tuning_guantesblancos( "HT0001", "TS0001" )
 
   # El ZZ depente de HT y TS
-  ZZ_final_guantesblancos( "ZZ0001-03", c("HT0001-03","TS0001-03") )
+  ZZ_final_guantesblancos( "ZZ0001", c("HT0001","TS0001") )
 
 
   exp_wf_end( pnombrewf, pvirgen ) # linea fija
@@ -346,12 +346,12 @@ corrida_guantesblancos_202107 <- function( pnombrewf, pvirgen=FALSE )
   if( -1 == exp_wf_init( pnombrewf, pvirgen) ) return(0) # linea fija
 
   # Ya tengo corrido FE0001 y parto de alli
-  TS_strategy_guantesblancos_202107( "TS0002-03", "FE0001-02" )
+  TS_strategy_guantesblancos_202107( "TS0002", "FE0001" )
 
-  HT_tuning_guantesblancos( "HT0002-03", "TS0002-03" )
+  HT_tuning_guantesblancos( "HT0002", "TS0002" )
 
   # El ZZ depente de HT y TS
-  ZZ_final_guantesblancos( "ZZ0002-03", c("HT0002-03", "TS0002-03") )
+  ZZ_final_guantesblancos( "ZZ0002", c("HT0002", "TS0002") )
 
 
   exp_wf_end( pnombrewf, pvirgen ) # linea fija
