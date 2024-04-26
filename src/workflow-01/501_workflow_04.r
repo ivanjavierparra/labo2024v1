@@ -1,4 +1,4 @@
-# Modelo original poniendo FE manual activado y 200 iteraciones BO
+# Modelo original poniendo FE manual activado y  70 iteraciones BO
 
 # limpio la memoria
 rm(list = ls(all.names = TRUE)) # remove all objects
@@ -258,7 +258,7 @@ HT_tuning_guantesblancos <- function( pmyexp, pinputexps, pserver="local")
     bagging_fraction = 1.0, # 0.0 < bagging_fraction <= 1.0
     pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
     neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
-    is_unbalance = FALSE, #
+    is_unbalance = TRUE, #
     scale_pos_weight = 1.0, # scale_pos_weight > 0.0
 
     drop_rate = 0.1, # 0.0 < neg_bagging_fraction <= 1.0
@@ -275,7 +275,7 @@ HT_tuning_guantesblancos <- function( pmyexp, pinputexps, pserver="local")
 
 
   # una Beyesian de Guantes Blancos, solo hace 15 iteraciones
-  param_local$bo_iteraciones <- 200 # iteraciones de la Optimizacion Bayesiana
+  param_local$bo_iteraciones <- 80 # iteraciones de la Optimizacion Bayesiana
 
   return( exp_correr_script( param_local ) ) # linea fija
 }
@@ -370,5 +370,4 @@ corrida_guantesblancos_202109( "gb-corrida-03-a" )
 
 corrida_guantesblancos_202107( "gb-corrida-03-b" )
 
- 
  
