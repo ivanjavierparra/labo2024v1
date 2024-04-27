@@ -1,7 +1,7 @@
-# Modelo original poniendo FE manual activado, 60 iteraciones BO, lightGBM.is_unbalanced=TRUE
-# lag2=TRUE ; lag3=TRUE;  Tendencias1$run=TRUE;  Tendencias2$run=TRUE; RandomForest$run = TRUE; 
+# Modelo original poniendo FE manual activado, 30 iteraciones BO, lightGBM.is_unbalanced=TRUE
+# lag2=TRUE ; lag3=FALSE;  Tendencias1$run=TRUE;  Tendencias2$run=FALSE; RandomForest$run = TRUE; 
 
-# Resultado = No pudo terminar! se lleva toda RAM!
+# Resultado = No pudo terminar! se lleva toda la memoria
 
 
 # limpio la memoria
@@ -132,7 +132,7 @@ FE_historia_guantesblancos <- function( pmyexp, pinputexps, pserver="local")
 
   param_local$lag1 <- TRUE
   param_local$lag2 <- TRUE # no me engraso con los lags de orden 2
-  param_local$lag3 <- TRUE # no me engraso con los lags de orden 3
+  param_local$lag3 <- FALSE # no me engraso con los lags de orden 3
 
   # no me engraso las manos con las tendencias
   param_local$Tendencias1$run <- TRUE  # FALSE, no corre nada de lo que sigue
@@ -145,7 +145,7 @@ FE_historia_guantesblancos <- function( pmyexp, pinputexps, pserver="local")
   param_local$Tendencias1$ratiomax <- FALSE
 
   # no me engraso las manos con las tendencias de segundo orden
-  param_local$Tendencias2$run <- TRUE
+  param_local$Tendencias2$run <- FALSE
   param_local$Tendencias2$ventana <- 6
   param_local$Tendencias2$tendencia <- TRUE
   param_local$Tendencias2$minimo <- FALSE
@@ -279,7 +279,7 @@ HT_tuning_guantesblancos <- function( pmyexp, pinputexps, pserver="local")
 
 
   # una Beyesian de Guantes Blancos, solo hace 15 iteraciones
-  param_local$bo_iteraciones <- 60 # iteraciones de la Optimizacion Bayesiana
+  param_local$bo_iteraciones <- 30 # iteraciones de la Optimizacion Bayesiana
 
   return( exp_correr_script( param_local ) ) # linea fija
 }
@@ -321,18 +321,18 @@ corrida_guantesblancos_202109 <- function( pnombrewf, pvirgen=FALSE )
 {
   if( -1 == exp_wf_init( pnombrewf, pvirgen) ) return(0) # linea fija
 
-  DT_incorporar_dataset_default( "DT0001-07", "competencia_2024.csv.gz")
-  CA_catastrophe_default( "CA0001-07", "DT0001-07" )
+  DT_incorporar_dataset_default( "DT0001-08", "competencia_2024.csv.gz")
+  CA_catastrophe_default( "CA0001-08", "DT0001-08" )
 
-  DR_drifting_guantesblancos( "DR0001-07", "CA0001-07" )
-  FE_historia_guantesblancos( "FE0001-07", "DR0001-07" )
+  DR_drifting_guantesblancos( "DR0001-08", "CA0001-08" )
+  FE_historia_guantesblancos( "FE0001-08", "DR0001-08" )
 
-  TS_strategy_guantesblancos_202109( "TS0001-07", "FE0001-07" )
+  TS_strategy_guantesblancos_202109( "TS0001-08", "FE0001-08" )
 
-  HT_tuning_guantesblancos( "HT0001-07", "TS0001-07" )
+  HT_tuning_guantesblancos( "HT0001-08", "TS0001-08" )
 
   # El ZZ depente de HT y TS
-  ZZ_final_guantesblancos( "ZZ0001-07", c("HT0001-07","TS0001-07") )
+  ZZ_final_guantesblancos( "ZZ0001-08", c("HT0001-08","TS0001-08") )
 
 
   exp_wf_end( pnombrewf, pvirgen ) # linea fija
@@ -349,12 +349,12 @@ corrida_guantesblancos_202107 <- function( pnombrewf, pvirgen=FALSE )
   if( -1 == exp_wf_init( pnombrewf, pvirgen) ) return(0) # linea fija
 
   # Ya tengo corrido FE0001 y parto de alli
-  TS_strategy_guantesblancos_202107( "TS0002-07", "FE0001-07" )
+  TS_strategy_guantesblancos_202107( "TS0002-08", "FE0001-08" )
 
-  HT_tuning_guantesblancos( "HT0002-07", "TS0002-07" )
+  HT_tuning_guantesblancos( "HT0002-08", "TS0002-08" )
 
   # El ZZ depente de HT y TS
-  ZZ_final_guantesblancos( "ZZ0002-07", c("HT0002-07", "TS0002-07") )
+  ZZ_final_guantesblancos( "ZZ0002-08", c("HT0002-08", "TS0002-08") )
 
 
   exp_wf_end( pnombrewf, pvirgen ) # linea fija
@@ -366,12 +366,12 @@ corrida_guantesblancos_202107 <- function( pnombrewf, pvirgen=FALSE )
 
 # Hago primero esta corrida que me genera los experimentos
 # DT0001, CA0001, DR0001, FE0001, TS0001, HT0001 y ZZ0001
-corrida_guantesblancos_202109( "gb-corrida-07-a" )
+corrida_guantesblancos_202109( "gb-corrida-08-a" )
 
 
 # Luego partiendo de  FE0001
 # genero TS0002, HT0002 y ZZ0002
 
-corrida_guantesblancos_202107( "gb-corrida-07-b" )
+corrida_guantesblancos_202107( "gb-corrida-08-b" )
 
  
