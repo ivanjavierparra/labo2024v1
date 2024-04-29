@@ -1,7 +1,7 @@
 # Modelo original poniendo FE manual activado, 30 iteraciones BO, lightGBM.is_unbalanced=TRUE
 # lag2=TRUE ; lag3=FALSE;  Tendencias1$run=TRUE;  Tendencias2$run=FALSE; RandomForest$run = TRUE; 
 
-# Resultado = No pudo terminar! se lleva toda la memoria
+
 
 
 # limpio la memoria

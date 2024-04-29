@@ -1,4 +1,8 @@
-# Modelo original poniendo FE manual activado y 70 iteraciones BO
+# Modelo original poniendo FE manual activado, 40 iteraciones BO, lightGBM.is_unbalanced=TRUE
+# lag2=TRUE ; lag3=FALSE;  Tendencias1$run=TRUE;  Tendencias2$run=FALSE; RandomForest$run = TRUE; 
+
+
+# Necesita 256gb RAM sino explota.
 
 # limpio la memoria
 rm(list = ls(all.names = TRUE)) # remove all objects
@@ -127,11 +131,11 @@ FE_historia_guantesblancos <- function( pmyexp, pinputexps, pserver="local")
   param_local$meta$script <- "/src/workflow-01/z541_FE_historia.r"
 
   param_local$lag1 <- TRUE
-  param_local$lag2 <- FALSE # no me engraso con los lags de orden 2
+  param_local$lag2 <- TRUE # no me engraso con los lags de orden 2
   param_local$lag3 <- FALSE # no me engraso con los lags de orden 3
 
   # no me engraso las manos con las tendencias
-  param_local$Tendencias1$run <- FALSE  # FALSE, no corre nada de lo que sigue
+  param_local$Tendencias1$run <- TRUE  # FALSE, no corre nada de lo que sigue
   param_local$Tendencias1$ventana <- 6
   param_local$Tendencias1$tendencia <- TRUE
   param_local$Tendencias1$minimo <- FALSE
@@ -153,7 +157,7 @@ FE_historia_guantesblancos <- function( pmyexp, pinputexps, pserver="local")
 
   # No me engraso las manos con las variables nuevas agregadas por un RF
   # esta parte demora mucho tiempo en correr, y estoy en modo manos_limpias
-  param_local$RandomForest$run <- FALSE
+  param_local$RandomForest$run <- TRUE
   param_local$RandomForest$num.trees <- 20
   param_local$RandomForest$max.depth <- 4
   param_local$RandomForest$min.node.size <- 1000
@@ -275,7 +279,7 @@ HT_tuning_guantesblancos <- function( pmyexp, pinputexps, pserver="local")
 
 
   # una Beyesian de Guantes Blancos, solo hace 15 iteraciones
-  param_local$bo_iteraciones <- 80 # iteraciones de la Optimizacion Bayesiana
+  param_local$bo_iteraciones <- 40 # iteraciones de la Optimizacion Bayesiana
 
   return( exp_correr_script( param_local ) ) # linea fija
 }
@@ -317,18 +321,18 @@ corrida_guantesblancos_202109 <- function( pnombrewf, pvirgen=FALSE )
 {
   if( -1 == exp_wf_init( pnombrewf, pvirgen) ) return(0) # linea fija
 
-  DT_incorporar_dataset_default( "DT0001-03", "competencia_2024.csv.gz")
-  CA_catastrophe_default( "CA0001-03", "DT0001-03" )
+  DT_incorporar_dataset_default( "DT0001-09", "competencia_2024.csv.gz")
+  CA_catastrophe_default( "CA0001-09", "DT0001-09" )
 
-  DR_drifting_guantesblancos( "DR0001-03", "CA0001-03" )
-  FE_historia_guantesblancos( "FE0001-03", "DR0001-03" )
+  DR_drifting_guantesblancos( "DR0001-09", "CA0001-09" )
+  FE_historia_guantesblancos( "FE0001-09", "DR0001-09" )
 
-  TS_strategy_guantesblancos_202109( "TS0001-03", "FE0001-03" )
+  TS_strategy_guantesblancos_202109( "TS0001-09", "FE0001-09" )
 
-  HT_tuning_guantesblancos( "HT0001-03", "TS0001-03" )
+  HT_tuning_guantesblancos( "HT0001-09", "TS0001-09" )
 
   # El ZZ depente de HT y TS
-  ZZ_final_guantesblancos( "ZZ0001-03", c("HT0001-03","TS0001-03") )
+  ZZ_final_guantesblancos( "ZZ0001-09", c("HT0001-09","TS0001-09") )
 
 
   exp_wf_end( pnombrewf, pvirgen ) # linea fija
@@ -345,12 +349,12 @@ corrida_guantesblancos_202107 <- function( pnombrewf, pvirgen=FALSE )
   if( -1 == exp_wf_init( pnombrewf, pvirgen) ) return(0) # linea fija
 
   # Ya tengo corrido FE0001 y parto de alli
-  TS_strategy_guantesblancos_202107( "TS0002-03", "FE0001-03" )
+  TS_strategy_guantesblancos_202107( "TS0002-09", "FE0001-09" )
 
-  HT_tuning_guantesblancos( "HT0002-03", "TS0002-03" )
+  HT_tuning_guantesblancos( "HT0002-09", "TS0002-09" )
 
   # El ZZ depente de HT y TS
-  ZZ_final_guantesblancos( "ZZ0002-03", c("HT0002-03", "TS0002-03") )
+  ZZ_final_guantesblancos( "ZZ0002-09", c("HT0002-09", "TS0002-09") )
 
 
   exp_wf_end( pnombrewf, pvirgen ) # linea fija
@@ -362,12 +366,12 @@ corrida_guantesblancos_202107 <- function( pnombrewf, pvirgen=FALSE )
 
 # Hago primero esta corrida que me genera los experimentos
 # DT0001, CA0001, DR0001, FE0001, TS0001, HT0001 y ZZ0001
-corrida_guantesblancos_202109( "gb-corrida-03-a" )
+corrida_guantesblancos_202109( "gb-corrida-09-a" )
 
 
 # Luego partiendo de  FE0001
 # genero TS0002, HT0002 y ZZ0002
 
-corrida_guantesblancos_202107( "gb-corrida-03-b" )
+# corrida_guantesblancos_202107( "gb-corrida-09-b" )
 
  
