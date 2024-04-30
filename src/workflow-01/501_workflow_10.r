@@ -1,6 +1,7 @@
 # Modelo original poniendo FE manual activado, 40 iteraciones BO, lightGBM.is_unbalanced=TRUE
 # lag1=TRUE; lag2=TRUE ; lag3=TRUE;  Tendencias1$run=TRUE;  Tendencias2$run=FALSE; RandomForest$run = TRUE; 
 
+# Resultado: pincho! no se banco la ram.
 
 # Necesita 256gb RAM sino explota.
 
