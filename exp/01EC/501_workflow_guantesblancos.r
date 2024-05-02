@@ -144,7 +144,7 @@ FE_historia_guantesblancos <- function( pmyexp, pinputexps, pserver="local")
   # no me engraso las manos con las tendencias de segundo orden
   param_local$Tendencias2$run <- FALSE
   param_local$Tendencias2$ventana <- 6
-  param_local$Tendencias2$tendencia <- TRUE
+  param_local$Tendencias2$tendencia <- FALSE
   param_local$Tendencias2$minimo <- FALSE
   param_local$Tendencias2$maximo <- FALSE
   param_local$Tendencias2$promedio <- FALSE
@@ -181,7 +181,7 @@ TS_strategy_guantesblancos_202109 <- function( pmyexp, pinputexps, pserver="loca
 
 
   param_local$future <- c(202109)
-  param_local$final_train <- c(202107, 202106, 202105, 202104, 202103)
+  param_local$final_train <- c(202107, 202106, 202105, 202104, 202103, 202102, 202101)
 
 
   param_local$train$training <- c(202105, 202104, 202103,202102,202101)
