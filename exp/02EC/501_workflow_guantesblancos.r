@@ -110,7 +110,7 @@ DR_drifting_guantesblancos <- function( pmyexp, pinputexps, pserver="local")
   param_local$variables_intrames <- TRUE
   # valores posibles
   #  "ninguno", "rank_simple", "rank_cero_fijo", "deflacion", "estandarizar"
-  param_local$metodo <- "rank_simple"
+  param_local$metodo <- "rank_cero_fijo"
 
   return( exp_correr_script( param_local ) ) # linea fija
 }
@@ -144,7 +144,7 @@ FE_historia_guantesblancos <- function( pmyexp, pinputexps, pserver="local")
   # no me engraso las manos con las tendencias de segundo orden
   param_local$Tendencias2$run <- FALSE
   param_local$Tendencias2$ventana <- 6
-  param_local$Tendencias2$tendencia <- TRUE
+  param_local$Tendencias2$tendencia <- FALSE
   param_local$Tendencias2$minimo <- FALSE
   param_local$Tendencias2$maximo <- FALSE
   param_local$Tendencias2$promedio <- FALSE
@@ -155,8 +155,8 @@ FE_historia_guantesblancos <- function( pmyexp, pinputexps, pserver="local")
   # No me engraso las manos con las variables nuevas agregadas por un RF
   # esta parte demora mucho tiempo en correr, y estoy en modo manos_limpias
   param_local$RandomForest$run <- TRUE
-  param_local$RandomForest$num.trees <- 30
-  param_local$RandomForest$max.depth <- 5
+  param_local$RandomForest$num.trees <- 20
+  param_local$RandomForest$max.depth <- 4
   param_local$RandomForest$min.node.size <- 1000
   param_local$RandomForest$mtry <- 40
 
@@ -181,10 +181,10 @@ TS_strategy_guantesblancos_202109 <- function( pmyexp, pinputexps, pserver="loca
 
 
   param_local$future <- c(202109)
-  param_local$final_train <- c(202107, 202106, 202105, 202104, 202103)
+  param_local$final_train <- c(202107, 202106, 202105, 202104, 202103, 202102, 202101, 202012, 202011)
 
 
-  param_local$train$training <- c(202105, 202104, 202103,202102,202101)
+  param_local$train$training <- c(202105, 202104, 202103, 202102, 202101, 202012, 202011, 202010, 202009)
   param_local$train$validation <- c(202106)
   param_local$train$testing <- c(202107)
 
@@ -207,10 +207,9 @@ TS_strategy_guantesblancos_202107 <- function( pmyexp, pinputexps, pserver="loca
 
 
   param_local$future <- c(202107)
-  param_local$final_train <- c(202105, 202104, 202103, 202102, 202101)
-
-
-  param_local$train$training <- c(202103, 202102, 202101, 202012, 202011)
+  param_local$final_train <- c(202105, 202104, 202103, 202102, 202101, 202012, 202011, 202010, 202009)
+  
+  param_local$train$training <- c(202103, 202102, 202101, 202012, 202011, 202010, 202009, 202008, 202007)
   param_local$train$validation <- c(202104)
   param_local$train$testing <- c(202105)
 
@@ -268,7 +267,7 @@ HT_tuning_guantesblancos <- function( pmyexp, pinputexps, pserver="local")
 
     extra_trees = FALSE,
     # White Gloves Bayesian Optimization, with a happy narrow exploration
-    learning_rate = c( 0.02, 0.8 ),
+    learning_rate = c( 0.01, 0.8 ),
     feature_fraction = c( 0.5, 0.9 ),
     num_leaves = c( 8L, 2048L,  "integer" ),
     min_data_in_leaf = c( 100L, 2000L, "integer" )
@@ -276,7 +275,7 @@ HT_tuning_guantesblancos <- function( pmyexp, pinputexps, pserver="local")
 
 
   # una Beyesian de Guantes Blancos, solo hace 15 iteraciones
-  param_local$bo_iteraciones <- 100 # iteraciones de la Optimizacion Bayesiana
+  param_local$bo_iteraciones <- 50 # iteraciones de la Optimizacion Bayesiana
 
   return( exp_correr_script( param_local ) ) # linea fija
 }
