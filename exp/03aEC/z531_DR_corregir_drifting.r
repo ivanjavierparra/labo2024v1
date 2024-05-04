@@ -131,6 +131,76 @@ AgregarVariables_IntraMes <- function(dataset) {
   dataset[, vmr_mpagominimo := vm_mpagominimo / vm_mlimitecompra]
 
   # Aqui debe usted agregar sus propias nuevas variables
+    # Experimento 3a
+  dataset[,p_saldo_cc := mcuentas_saldo/ccuenta_corriente]
+  dataset[,p_saldo_ca := mcuentas_saldo/ccaja_ahorro]
+  dataset[,p_saldo_ctas := mcuentas_saldo/(ccaja_ahorro + ccuenta_corriente)]
+  dataset[,p_cons_trans_m := mtarjeta_master_consumo / ctarjeta_master_transacciones]
+  dataset[,p_cons_trans_v := mtarjeta_visa_consumo / ctarjeta_visa_transacciones]
+  dataset[,p_transferencias_recibidas := mtransferencias_recibidas / ctransferencias_recibidas]
+  dataset[,p_transferencias_emitidas := mtransferencias_emitidas / ctransferencias_emitidas]
+  # Verificar si los denominadores son diferentes de cero
+  dataset$denominador <- dataset$ctransferencias_recibidas + dataset$ctransferencias_emitidas
+
+  # Calcular p_ponderado_transeferencias
+  dataset$p_ponderado_transeferencias <- ifelse(dataset$denominador != 0,
+                                               (dataset$mtransferencias_recibidas * dataset$ctransferencias_recibidas +
+                                                  dataset$mtransferencias_emitidas * dataset$ctransferencias_emitidas) /
+                                                 dataset$denominador,
+                                               0)
+
+  # Eliminar la columna de auxiliar de denominador si ya no la necesitas
+  dataset <- subset(dataset, select = -c(denominador))
+  dataset[, p_cheques_depositados := ifelse(ccheques_depositados != 0, mcheques_depositados / ccheques_depositados, NA)]
+  dataset[, p_cheques_emitidos := ifelse(ccheques_emitidos != 0, mcheques_emitidos / ccheques_emitidos, NA)]
+  dataset[,p_rentabilidad_mensual := mrentabilidad / mrentabilidad_annual ]
+  dataset[,p_atm_other := matm_other / catm_trx_other]
+  dataset[,p_atm := matm / catm_trx]
+  dataset[,p_forex_buy := mforex_buy / cforex_buy]
+  dataset[,p_forex_sell := mforex_sell / cforex_sell]
+  dataset[,p_mextraccion_autoservicio := mextraccion_autoservicio / matm]
+  dataset[,p_cextraccion_autoservicio := cextraccion_autoservicio / catm_trx]
+  dataset[ ,d_prestamos :=   ifelse( (cprestamos_personales + cprestamos_prendarios + cprestamos_hipotecarios) > 0 ,1, 0)]  
+  dataset[ ,d_seguros :=   ifelse( (cseguro_vida + cseguro_auto + cseguro_vivienda + cseguro_accidentes_personales) > 0 ,1, 0)]  
+  dataset[ ,d_cajas_ahorro :=   ifelse( (ccaja_ahorro) > 0 ,1, 0)]  
+  dataset[ ,dcuenta_corriente :=   ifelse( (ccuenta_corriente) > 0 ,1, 0)] 
+  dataset[ ,d_debitos_automaticos :=   ifelse( (ccuenta_debitos_automaticos) > 0 ,1, 0)]  
+  dataset[ ,d_pagodeservicios :=   ifelse( (cpagodeservicios) > 0 ,1, 0)]  
+  dataset[ ,d_pagomiscuentas :=   ifelse( (cpagomiscuentas) > 0 ,1, 0)]  
+  dataset[ ,d_forex :=   ifelse( (cforex) > 0 ,1, 0)]  
+  dataset[ ,d_forex_buy :=   ifelse( (cforex_buy) > 0 ,1, 0)]  
+  dataset[ ,d_forex_sell :=   ifelse( (cforex_sell) > 0 ,1, 0)]  
+  dataset[ ,d_transferencias_emitidas :=   ifelse( (ctransferencias_emitidas) > 0 ,1, 0)]  
+  dataset[ ,d_uso_atm :=   ifelse( (catm_trx+catm_trx_other) > 0 ,1, 0)]  
+  dataset[ ,d_cheques_emitidos :=   ifelse( ccheques_emitidos > 0 ,1, 0)]  
+  dataset[ ,d_cheques_depositados :=   ifelse( ccheques_depositados > 0 ,1, 0)]  
+  dataset[ ,d_operaciones_en_sucursal :=   ifelse( (
+    ccajas_transacciones +
+    ccajas_consultas +
+    ccajas_depositos +
+    ccajas_extracciones +
+    ccajas_otras
+
+  ) > 0 ,1, 0)]  
+  dataset[,t_montos := mrentabilidad+mrentabilidad_annual+mcomisiones+mactivos_margen+mpasivos_margen+mcuenta_corriente_adicional+mcuenta_corriente+mcaja_ahorro+mcaja_ahorro_adicional+mcaja_ahorro_dolares+mcuentas_saldo+mautoservicio+mtarjeta_visa_consumo+mtarjeta_master_consumo+mprestamos_personales+mprestamos_prendarios+mprestamos_hipotecarios+mplazo_fijo_dolares+mplazo_fijo_pesos+minversion1_pesos+minversion1_dolares+minversion2+mpayroll+mpayroll2+mcuenta_debitos_automaticos+mttarjeta_master_debitos_automaticos+mpagodeservicios+mpagomiscuentas+mcajeros_propios_descuentos+mtarjeta_visa_descuentos+mtarjeta_master_descuentos+mcomisiones_mantenimiento+mcomisiones_otras+mforex_buy+mforex_sell+mtransferencias_recibidas+mtransferencias_emitidas+mextraccion_autoservicio+mcheques_depositados+mcheques_emitidos+mcheques_depositados_rechazados+mcheques_emitidos_rechazados+matm+Master_mfinanciacion_limite+Master_msaldototal+Master_msaldopesos+Master_msaldodolares+Master_mconsumospesos+Master_mconsumosdolares+Master_mlimitecompra+Master_madelantopesos+Master_madelantodolares+Master_mpagado+Master_mpagospesos+Master_mpagosdolares+Master_mconsumototal+Master_mpagominimo]
+  dataset[,d_ca_negativa := ifelse( (mcaja_ahorro) > 0 ,1, 0)]
+  dataset[,d_cc_negativa := ifelse( (mcuenta_corriente ) > 0 ,1, 0)]
+  dataset[, d_uso_tarjeta_credito := ifelse(ctarjeta_visa_transacciones + ctarjeta_master_transacciones > 0, 1, 0)]
+  dataset[, d_uso_tarjeta_debito := ifelse(ctarjeta_debito_transacciones  > 0, 1, 0)]
+  dataset[, d_inversion := ifelse(cplazo_fijo + cinversion1 + cinversion2 > 0, 1, 0)]
+  dataset[,d_status_0 := as.integer(Master_status == 0 | Visa_status == 0)]
+  dataset[,d_status_6 := as.integer(Master_status == 6 | Visa_status == 6)]
+  dataset[,d_status_7 := as.integer(Master_status == 7 | Visa_status == 7)]
+  dataset[,d_status_9 := as.integer(Master_status == 9 | Visa_status == 9)]
+  dataset[, d_recibe_acreditaciones := ifelse(cpayroll_trx + cpayroll2_trx  > 0, 1, 0)]
+  dataset[, d_es_rentable := ifelse( mrentabilidad  > 0, 1, 0)]
+  dataset[, d_tiene_tarjetascredito := ifelse( (ctarjeta_visa + ctarjeta_master)  > 0, 1, 0)]
+  dataset[,d_status_ok := ifelse((Master_status + Visa_status) == 0, 1, 0)]
+  dataset[,d_delinquency := ifelse((Visa_delinquency == 1 | Master_delinquency == 1), 1,0)]
+  dataset[,d_perfil_tipico_baja_2 := ifelse((mcuenta_corriente_adicional | mprestamos_prendarios | mprestamos_hipotecarios | mplazo_fijo_pesos | minversion1_pesos | minversion1_dolares | minversion2 | mpayroll2 | cpayroll2_trx | mpagodeservicios | mcajeros_propios_descuentos | mtarjeta_visa_descuentos | mtarjeta_master_descuentos | mcomisiones_mantenimiento | mforex_buy | mforex_sell | Master_msaldodolares | Master_mconsumosdolares | Master_madelantopesos | Master_cadelantosefectivo | Visa_mconsumosdolares | Visa_madelantopesos | Visa_cadelantosefectivo),0,1)]
+  dataset[,d_visa_finiciomora := ifelse(Visa_Finiciomora> 30,1,0)]
+  dataset[, t_descuentos := (mtarjeta_visa_descuentos + mtarjeta_master_descuentos) / 
+            (ctarjeta_visa_descuentos + ctarjeta_master_descuentos)]
 
 
   # valvula de seguridad para evitar valores infinitos
