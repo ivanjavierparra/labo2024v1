@@ -50,7 +50,7 @@ setwd( envg$EXPENV$wf_dir_local )
 #------------------------------------------------------------------------------
 # cargo la  "libreria" de los experimentos
 
-exp_lib <- paste0( envg$EXPENV$repo_dir,"/exp/03aEC/z590_exp_lib_01.r")
+exp_lib <- paste0( envg$EXPENV$repo_dir,"/exp/03bEC/z590_exp_lib_01.r")
 source( exp_lib )
 
 #------------------------------------------------------------------------------
@@ -64,7 +64,7 @@ DT_incorporar_dataset_default <- function( pmyexp, parch, pserver="local")
   if( -1 == (param_local <- exp_init_datos( pmyexp, parch, pserver ))$resultado ) return( 0 )# linea fija
 
 
-  param_local$meta$script <- "/exp/03aEC/z511_DT_incorporar_dataset.r"
+  param_local$meta$script <- "/exp/03bEC/z511_DT_incorporar_dataset.r"
 
   param_local$primarykey <- c("numero_de_cliente", "foto_mes" )
   param_local$entity_id <- c("numero_de_cliente" )
@@ -84,7 +84,7 @@ CA_catastrophe_default <- function( pmyexp, pinputexps, pserver="local")
   if( -1 == (param_local <- exp_init( pmyexp, pinputexps, pserver ))$resultado ) return( 0 )# linea fija
 
 
-  param_local$meta$script <- "/exp/03aEC/z521_CA_reparar_dataset.r"
+  param_local$meta$script <- "/exp/03bEC/z521_CA_reparar_dataset.r"
 
   # Opciones MachineLearning EstadisticaClasica Ninguno
   param_local$metodo <- "MachineLearning" # MachineLearning EstadisticaClasica Ninguno
@@ -104,7 +104,7 @@ DR_drifting_guantesblancos <- function( pmyexp, pinputexps, pserver="local")
   if( -1 == (param_local <- exp_init( pmyexp, pinputexps, pserver ))$resultado ) return( 0 )# linea fija
 
 
-  param_local$meta$script <- "/exp/03aEC/z531_DR_corregir_drifting.r"
+  param_local$meta$script <- "/exp/03bEC/z531_DR_corregir_drifting.r"
 
   # No me engraso las manos con Feature Engineering manual
   param_local$variables_intrames <- TRUE
@@ -125,7 +125,7 @@ FE_historia_guantesblancos <- function( pmyexp, pinputexps, pserver="local")
   if( -1 == (param_local <- exp_init( pmyexp, pinputexps, pserver ))$resultado ) return( 0 )# linea fija
 
 
-  param_local$meta$script <- "/exp/03aEC/z541_FE_historia.r"
+  param_local$meta$script <- "/exp/03bEC/z541_FE_historia.r"
 
   param_local$lag1 <- TRUE
   param_local$lag2 <- FALSE # no me engraso con los lags de orden 2
@@ -177,7 +177,7 @@ TS_strategy_guantesblancos_202109 <- function( pmyexp, pinputexps, pserver="loca
 {
   if( -1 == (param_local <- exp_init( pmyexp, pinputexps, pserver ))$resultado ) return( 0 )# linea fija
 
-  param_local$meta$script <- "/exp/03aEC/z551_TS_training_strategy.r"
+  param_local$meta$script <- "/exp/03bEC/z551_TS_training_strategy.r"
 
 
   param_local$future <- c(202109)
@@ -203,7 +203,7 @@ TS_strategy_guantesblancos_202107 <- function( pmyexp, pinputexps, pserver="loca
 {
   if( -1 == (param_local <- exp_init( pmyexp, pinputexps, pserver ))$resultado ) return( 0 )# linea fija
 
-  param_local$meta$script <- "/exp/03aEC/z551_TS_training_strategy.r"
+  param_local$meta$script <- "/exp/03bEC/z551_TS_training_strategy.r"
 
 
   param_local$future <- c(202107)
@@ -229,7 +229,7 @@ HT_tuning_guantesblancos <- function( pmyexp, pinputexps, pserver="local")
 {
   if( -1 == (param_local <- exp_init( pmyexp, pinputexps, pserver ))$resultado ) return( 0 )# linea fija
 
-  param_local$meta$script <- "/exp/03aEC/z561_HT_lightgbm.r"
+  param_local$meta$script <- "/exp/03bEC/z561_HT_lightgbm.r"
 
   # En caso que se haga cross validation, se usa esta cantidad de folds
   param_local$lgb_crossvalidation_folds <- 5
@@ -286,7 +286,7 @@ ZZ_final_guantesblancos <- function( pmyexp, pinputexps, pserver="local")
 {
   if( -1 == (param_local <- exp_init( pmyexp, pinputexps, pserver ))$resultado ) return( 0 )# linea fija
 
-  param_local$meta$script <- "/exp/03aEC/z571_ZZ_final.r"
+  param_local$meta$script <- "/exp/03bEC/z571_ZZ_final.r"
 
   # Que modelos quiero, segun su posicion en el ranking e la Bayesian Optimizacion, ordenado por ganancia descendente
   param_local$modelos_rank <- c(1)
@@ -317,18 +317,18 @@ corrida_guantesblancos_202109 <- function( pnombrewf, pvirgen=FALSE )
 {
   if( -1 == exp_wf_init( pnombrewf, pvirgen) ) return(0) # linea fija
 
-  DT_incorporar_dataset_default( "DT0001-e003a", "competencia_2024.csv.gz")
-  CA_catastrophe_default( "CA0001-e003a", "DT0001-e003a" )
+  DT_incorporar_dataset_default( "DT0001-e003b", "competencia_2024.csv.gz")
+  CA_catastrophe_default( "CA0001-e003b", "DT0001-e003b" )
 
-  DR_drifting_guantesblancos( "DR0001-e003a", "CA0001-e003a" )
-  FE_historia_guantesblancos( "FE0001-e003a", "DR0001-e003a" )
+  DR_drifting_guantesblancos( "DR0001-e003b", "CA0001-e003b" )
+  FE_historia_guantesblancos( "FE0001-e003b", "DR0001-e003b" )
 
-  TS_strategy_guantesblancos_202109( "TS0001-e003a", "FE0001-e003a" )
+  TS_strategy_guantesblancos_202109( "TS0001-e003b", "FE0001-e003b" )
 
-  HT_tuning_guantesblancos( "HT0001-e003a", "TS0001-e003a" )
+  HT_tuning_guantesblancos( "HT0001-e003b", "TS0001-e003b" )
 
   # El ZZ depente de HT y TS
-  ZZ_final_guantesblancos( "ZZ0001-e003a", c("HT0001-e003a","TS0001-e003a") )
+  ZZ_final_guantesblancos( "ZZ0001-e003b", c("HT0001-e003b","TS0001-e003b") )
 
 
   exp_wf_end( pnombrewf, pvirgen ) # linea fija
@@ -345,12 +345,12 @@ corrida_guantesblancos_202107 <- function( pnombrewf, pvirgen=FALSE )
   if( -1 == exp_wf_init( pnombrewf, pvirgen) ) return(0) # linea fija
 
   # Ya tengo corrido FE0001 y parto de alli
-  TS_strategy_guantesblancos_202107( "TS0002-e003a", "FE0001-e003a" )
+  TS_strategy_guantesblancos_202107( "TS0002-e003b", "FE0001-e003b" )
 
-  HT_tuning_guantesblancos( "HT0002-e003a", "TS0002-e003a" )
+  HT_tuning_guantesblancos( "HT0002-e003b", "TS0002-e003b" )
 
   # El ZZ depente de HT y TS
-  ZZ_final_guantesblancos( "ZZ0002-e003a", c("HT0002-e003a", "TS0002-e003a") )
+  ZZ_final_guantesblancos( "ZZ0002-e003b", c("HT0002-e003b", "TS0002-e003b") )
 
 
   exp_wf_end( pnombrewf, pvirgen ) # linea fija
@@ -362,12 +362,12 @@ corrida_guantesblancos_202107 <- function( pnombrewf, pvirgen=FALSE )
 
 # Hago primero esta corrida que me genera los experimentos
 # DT0001, CA0001, DR0001, FE0001, TS0001, HT0001 y ZZ0001
-corrida_guantesblancos_202109( "gb01-e003a" )
+corrida_guantesblancos_202109( "gb01-e003b" )
 
 
 # Luego partiendo de  FE0001
 # genero TS0002, HT0002 y ZZ0002
 
-# corrida_guantesblancos_202107( "gb02-e003a" )
+# corrida_guantesblancos_202107( "gb02-e003b" )
 
  
