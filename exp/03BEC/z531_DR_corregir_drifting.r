@@ -459,7 +459,7 @@ setorderv(dataset, PARAM$dataset_metadata$primarykey)
 #  estos son los campos que expresan variables monetarias
 campos_monetarios <- colnames(dataset)
 campos_monetarios <- campos_monetarios[campos_monetarios %like%
-  "^(m|Visa_m|Master_m|vm_m|p_|t_)"]
+  "^(m|Visa_m|Master_m|vm_m|p_|t_|pond_)"]
 
 
 
